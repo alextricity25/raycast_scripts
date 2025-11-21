@@ -16,6 +16,12 @@
 on run argv
     set branchName to item 1 of argv
 
+    -- Dismiss Raycast first
+    tell application "System Events"
+        key code 53 -- Escape key
+        delay 0.3
+    end tell
+
     tell application "Ghostty"
         activate
         delay 0.5
