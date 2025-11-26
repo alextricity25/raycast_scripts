@@ -47,6 +47,13 @@ on run argv
             -- Press Enter to confirm
             key code 36 -- Return key
 
+            -- Change the xrdm repo that corresponds to the worktree
+            keystroke "cd ~/Development/" & branchName
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
+
             -- Run lazygit
             keystroke "lazygit"
             delay 0.2
