@@ -167,6 +167,20 @@ on run argv
 
             -- Press Enter to confirm
             key code 36 -- Return key
+
+            -- Copy necessary files over from main worktree
+            keystroke "cp /Users/alexcantu/Development/xrdm/devops/apps/idp/.env ~/Development/" & branchName & "/devops/apps/idp"
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
+
+            -- Copy necessary files over from main worktree
+            keystroke "cp /Users/alexcantu/Development/xrdm/devops/apps/idp/CLAUDE.md ~/Development/" & branchName & "/devops/apps/idp"
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
             -- End Tab 4 --------------------------
 
         end tell
