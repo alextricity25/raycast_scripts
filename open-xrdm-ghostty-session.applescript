@@ -183,6 +183,31 @@ on run argv
             key code 36 -- Return key
             -- End Tab 4 --------------------------
 
+            -- Tab 5 ------------------------------
+            keystroke "t" using command down
+            delay 0.5
+
+            -- Open command palette (Cmd+Shift+P)
+            keystroke "p" using {command down, shift down}
+            delay 0.3
+
+            -- Type "change title"
+            keystroke "change title"
+            delay 0.5
+
+            -- Press Enter to select the command
+            key code 36 -- Return key
+            delay 0.5
+
+            -- Type the branch name for tab 2
+            keystroke "xrdm " & branchName & " - "
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
+
+            -- End Tab 5 --------------------------
+
         end tell
     end tell
 end run
