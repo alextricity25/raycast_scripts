@@ -123,46 +123,7 @@ on run argv
             delay 0.5
 
             -- Type the branch name for tab 2
-            keystroke "xrdm " & branchName & " - infra"
-            delay 0.2
-
-            -- Press Enter to confirm
-            key code 36 -- Return key
-
-            -- Change the xrdm infra dir
-            keystroke "cd devops/infrastructure/xrdm"
-            delay 0.2
-
-            -- Press Enter to confirm
-            key code 36 -- Return key
-            -- End Tab 3 --------------------------
-
-
-            -- Tab 4 ------------------------------
-            keystroke "t" using command down
-            delay 0.5
-
-            -- Open command palette (Cmd+Shift+P)
-            keystroke "p" using {command down, shift down}
-            delay 0.3
-
-            -- Type "change title"
-            keystroke "change title"
-            delay 0.5
-
-            -- Press Enter to select the command
-            key code 36 -- Return key
-            delay 0.5
-
-            -- Type the branch name for tab 2
-            keystroke "xrdm " & branchName & " - idp"
-            delay 0.2
-
-            -- Press Enter to confirm
-            key code 36 -- Return key
-
-            -- Change the xrdm idp app repo
-            keystroke "cd devops/apps/idp"
+            keystroke "xrdm " & branchName & " - code"
             delay 0.2
 
             -- Press Enter to confirm
@@ -182,31 +143,6 @@ on run argv
             -- Press Enter to confirm
             key code 36 -- Return key
             -- End Tab 4 --------------------------
-
-            -- Tab 5 ------------------------------
-            keystroke "t" using command down
-            delay 0.5
-
-            -- Open command palette (Cmd+Shift+P)
-            keystroke "p" using {command down, shift down}
-            delay 0.3
-
-            -- Type "change title"
-            keystroke "change title"
-            delay 0.5
-
-            -- Press Enter to select the command
-            key code 36 -- Return key
-            delay 0.5
-
-            -- Type the branch name for tab 2
-            keystroke "xrdm " & branchName & " - "
-            delay 0.2
-
-            -- Press Enter to confirm
-            key code 36 -- Return key
-
-            -- End Tab 5 --------------------------
 
         end tell
     end tell
