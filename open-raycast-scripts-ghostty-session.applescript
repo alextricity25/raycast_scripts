@@ -48,8 +48,8 @@ on run argv
             keystroke "p" using {command down, shift down}
             delay 0.3
 
-            -- Type "change title"
-            keystroke "change title"
+            -- Type "change tab title"
+            keystroke "change tab title"
             delay 0.5
 
             -- Press Enter to select the command
@@ -72,8 +72,8 @@ on run argv
             keystroke "p" using {command down, shift down}
             delay 0.3
 
-            -- Type "change title"
-            keystroke "change title"
+            -- Type "change tab title"
+            keystroke "change tab title"
             delay 0.5
 
             -- Press Enter to select the command
