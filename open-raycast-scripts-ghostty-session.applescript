@@ -66,6 +66,14 @@ on run argv
 
             -- Tab 2 ------------------------------
             keystroke "t" using command down
+            delay 1.5
+
+            -- cd to the raycast_scripts repo
+            keystroke "cd ~/Development/raycast_scripts/"
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
             delay 0.5
 
             -- Open command palette (Cmd+Shift+P)
@@ -87,6 +95,47 @@ on run argv
             -- Press Enter to confirm
             key code 36 -- Return key
             -- End Tab 2 --------------------------
+
+
+            -- Tab 3 ------------------------------
+            keystroke "t" using command down
+            delay 1.5
+
+            -- cd to the raycast_scripts repo
+            keystroke "cd ~/Development/raycast_scripts/"
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
+            delay 0.5
+
+            -- Launch Claude Code
+            keystroke "claude"
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
+            delay 0.5
+
+            -- Open command palette (Cmd+Shift+P)
+            keystroke "p" using {command down, shift down}
+            delay 0.3
+
+            -- Type "change tab title"
+            keystroke "change tab title"
+            delay 0.5
+
+            -- Press Enter to select the command
+            key code 36 -- Return key
+            delay 0.5
+
+            -- Type the title for claude tab
+            keystroke "raycast_scripts - claude"
+            delay 0.2
+
+            -- Press Enter to confirm
+            key code 36 -- Return key
+            -- End Tab 3 --------------------------
         end tell
     end tell
 end run
