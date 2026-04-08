@@ -15,11 +15,19 @@
 
 on run argv
     set branchName to item 1 of argv
+    set mainRepo to "~/Development/xrdm"
+
+    -- Look up the Linear issue and generate a short tab label
+    try
+        set shortDescription to do shell script "echo 'Extract the Linear issue ID from this branch name: " & branchName & ". Look up the issue and generate a 3-5 word tab label describing the task. Output ONLY the label, nothing else.' | claude -p --allowedTools 'mcp__linear-server__get_issue'"
+    on error
+        set shortDescription to ""
+    end try
 
     if branchName is "main" then
-        set workDir to "~/Development/xrdm"
+        set workDir to mainRepo
     else
-        set workDir to "~/Development/" & branchName
+        set workDir to mainRepo & "/.claude/worktrees/" & branchName
     end if
 
     -- Optional second argument: a prompt to pass to claude code
@@ -46,23 +54,23 @@ on run argv
             keystroke "n" using command down
             delay 1.5
 
-            -- Change the xrdm repo
-            keystroke "cd ~/Development/xrdm"
+            -- Change to the main repo
+            keystroke "cd " & mainRepo
             delay 0.2
 
             -- Press Enter to confirm
             key code 36 -- Return key
 
             if branchName is not "main" then
-                -- Fetch remote, then create worktree: track remote branch if it exists, otherwise create new branch from HEAD
-                keystroke "git fetch origin && git worktree add ../" & branchName & " " & branchName & " 2>/dev/null || git worktree add -b " & branchName & " ../" & branchName & " 2>/dev/null || true"
+                -- Ensure worktree parent directory exists, fetch remote, then create worktree
+                keystroke "mkdir -p .claude/worktrees && git fetch origin && git worktree add .claude/worktrees/" & branchName & " " & branchName & " 2>/dev/null || git worktree add -b " & branchName & " .claude/worktrees/" & branchName & " 2>/dev/null || true"
                 delay 0.2
 
                 -- Press Enter to confirm
                 key code 36 -- Return key
             end if
 
-            -- Change the xrdm repo that corresponds to the worktree
+            -- Change to the worktree directory
             keystroke "cd " & workDir
             delay 0.2
 
@@ -89,7 +97,11 @@ on run argv
             delay 0.5
 
             -- Type the branch name for tab 1
-            keystroke "xrdm " & branchName & " - lazygit"
+            if shortDescription is not "" then
+                keystroke "xrdm " & branchName & " - " & shortDescription & " - lazygit"
+            else
+                keystroke "xrdm " & branchName & " - lazygit"
+            end if
             delay 0.2
 
             -- Press Enter to confirm
@@ -121,7 +133,11 @@ on run argv
             delay 0.5
 
             -- Type the branch name for tab 2
-            keystroke "xrdm " & branchName & " - k9s"
+            if shortDescription is not "" then
+                keystroke "xrdm " & branchName & " - " & shortDescription & " - k9s"
+            else
+                keystroke "xrdm " & branchName & " - k9s"
+            end if
             delay 0.2
 
             -- Press Enter to confirm
@@ -154,27 +170,15 @@ on run argv
             delay 0.5
 
             -- Type the branch name for tab 2
-            keystroke "xrdm " & branchName & " - code"
+            if shortDescription is not "" then
+                keystroke "xrdm " & branchName & " - " & shortDescription & " - code"
+            else
+                keystroke "xrdm " & branchName & " - code"
+            end if
             delay 0.2
 
             -- Press Enter to confirm
             key code 36 -- Return key
-
-            if branchName is not "main" then
-                -- Copy necessary files over from main worktree
-                keystroke "cp /Users/alexcantu/Development/xrdm/devops/apps/idp/.env " & workDir & "/devops/apps/idp"
-                delay 0.2
-
-                -- Press Enter to confirm
-                key code 36 -- Return key
-
-                -- Copy necessary files over from main worktree
-                keystroke "cp /Users/alexcantu/Development/xrdm/devops/apps/idp/CLAUDE.md " & workDir & "/devops/apps/idp"
-                delay 0.2
-
-                -- Press Enter to confirm
-                key code 36 -- Return key
-            end if
             -- End Tab 3 --------------------------
 
 
@@ -195,7 +199,11 @@ on run argv
             delay 0.5
 
             -- Type the tab title
-            keystroke "xrdm " & branchName & " - claude"
+            if shortDescription is not "" then
+                keystroke "xrdm " & branchName & " - " & shortDescription & " - claude"
+            else
+                keystroke "xrdm " & branchName & " - claude"
+            end if
             delay 0.2
 
             -- Press Enter to confirm
