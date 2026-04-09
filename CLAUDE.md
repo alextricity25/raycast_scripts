@@ -27,6 +27,7 @@ All Raycast scripts must include special comment metadata at the top of the file
 **Optional parameters:**
 - `@raycast.icon` - Emoji icon displayed in Raycast
 - `@raycast.packageName` - Grouping name for related scripts
+- `@raycast.argument1` - JSON object for script arguments: `{ "type": "text", "placeholder": "Name" }`
 - `@raycast.author` - Author username
 - `@raycast.authorURL` - Author profile URL
 
@@ -59,11 +60,26 @@ Or for AppleScript:
 osascript <script-name>.applescript
 ```
 
-## Script Examples
+## Scripts
 
-### open-xrdm-ghostty-session.applescript
+- **open-xrdm-ghostty-session.applescript** - Opens a multi-tab Ghostty session for xrdm development (lazygit, code, k9s, Claude Code tabs) with git worktree support. Accepts a branch name argument and optionally a Claude Code prompt.
+- **open-raycast-scripts-ghostty-session.applescript** - Opens a multi-tab Ghostty session for this raycast_scripts repo (lazygit, code, Claude Code tabs).
+- **tile-ghostty-windows.applescript** - Tiles up to 6 Ghostty windows into a grid on the screen under the mouse cursor. Uses NSScreen/AppKit for multi-monitor support.
 
-This script demonstrates AppleScript integration with Ghostty terminal:
-- Uses System Events to simulate keyboard shortcuts
-- Creates multiple tabs in Ghostty terminal window
-- Includes delay timing for UI automation reliability
+## AppleScript Gotchas
+
+### NSScreen Coordinate Conversion
+- Cocoa uses bottom-left origin; System Events uses top-left origin (relative to primary screen)
+- Convert: `SE_y = primaryScreenHeight - cocoaY - windowHeight`
+- Destructure NSRect as a list, not with dot notation: `set {{x, y}, {w, h}} to (screen's frame()) as list`
+
+### Multi-Monitor Menu Bar
+- `NSScreen visibleFrame` equals `frame` on non-primary screens, even when "Displays have separate Spaces" is on
+- Derive menu bar height from the primary screen: `primaryFrameHeight - primaryVisibleHeight`
+- Apply that offset to all screens
+
+### Ghostty Window Automation
+- Ghostty snaps window sizes to character cell boundaries — requesting an exact pixel height may result in a different actual height
+- When tiling, resize all windows first (pass 1), then position them (pass 2) to prevent macOS from shifting windows
+- Filter windows by screen position to avoid moving windows across monitors
+- Use `tell application "System Events" to tell process "Ghostty"` for window manipulation (Ghostty's own scripting dictionary is minimal)
