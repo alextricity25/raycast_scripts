@@ -17,12 +17,34 @@ on run argv
     set branchName to item 1 of argv
     set mainRepo to "~/Development/xrdm"
 
-    -- Look up the Linear issue and generate a short tab label
-    try
-        set shortDescription to do shell script "echo 'Extract the Linear issue ID from this branch name: " & branchName & ". Look up the issue and generate a 3-5 word tab label describing the task. Output ONLY the label, nothing else.' | claude -p --allowedTools 'mcp__linear-server__get_issue'"
-    on error
+    -- Extract the Linear issue ID (e.g. PLA-1234) from the branch name
+    if branchName is not "main" then
+        try
+            set issueID to do shell script "echo " & quoted form of branchName & " | grep -oiE '[a-z]+-[0-9]+' | head -1 | tr '[:lower:]' '[:upper:]'"
+        on error
+            set issueID to ""
+        end try
+    else
+        set issueID to ""
+    end if
+
+    -- Look up the Linear issue and generate a terse tab label
+    if issueID is not "" then
+        try
+            set shortDescription to do shell script "echo 'Extract the Linear issue ID from this branch name: " & branchName & ". Look up the issue and generate a terse 3-4 word tab label describing the task. Output ONLY the label, nothing else.' | claude -p --allowedTools 'mcp__linear-server__get_issue'"
+        on error
+            set shortDescription to ""
+        end try
+    else
         set shortDescription to ""
-    end try
+    end if
+
+    -- Build the tab label prefix (e.g. "Fix Auth Flow")
+    if shortDescription is not "" then
+        set tabLabel to shortDescription
+    else
+        set tabLabel to branchName
+    end if
 
     if branchName is "main" then
         set workDir to mainRepo
@@ -96,12 +118,8 @@ on run argv
             key code 36 -- Return key
             delay 0.5
 
-            -- Type the branch name for tab 1
-            if shortDescription is not "" then
-                keystroke "xrdm " & branchName & " - " & shortDescription & " - lazygit"
-            else
-                keystroke "xrdm " & branchName & " - lazygit"
-            end if
+            -- Type the tab title for tab 1
+            keystroke tabLabel & " - lg"
             delay 0.2
 
             -- Press Enter to confirm
@@ -132,12 +150,8 @@ on run argv
             key code 36 -- Return key
             delay 0.5
 
-            -- Type the branch name for tab 2
-            if shortDescription is not "" then
-                keystroke "xrdm " & branchName & " - " & shortDescription & " - k9s"
-            else
-                keystroke "xrdm " & branchName & " - k9s"
-            end if
+            -- Type the tab title for tab 2
+            keystroke tabLabel & " - k9"
             delay 0.2
 
             -- Press Enter to confirm
@@ -169,12 +183,8 @@ on run argv
             key code 36 -- Return key
             delay 0.5
 
-            -- Type the branch name for tab 2
-            if shortDescription is not "" then
-                keystroke "xrdm " & branchName & " - " & shortDescription & " - code"
-            else
-                keystroke "xrdm " & branchName & " - code"
-            end if
+            -- Type the tab title for tab 3
+            keystroke tabLabel & " - code"
             delay 0.2
 
             -- Press Enter to confirm
@@ -198,12 +208,8 @@ on run argv
             key code 36 -- Return key
             delay 0.5
 
-            -- Type the tab title
-            if shortDescription is not "" then
-                keystroke "xrdm " & branchName & " - " & shortDescription & " - claude"
-            else
-                keystroke "xrdm " & branchName & " - claude"
-            end if
+            -- Type the tab title for tab 4
+            keystroke tabLabel & " - cc"
             delay 0.2
 
             -- Press Enter to confirm
