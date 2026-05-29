@@ -90,36 +90,79 @@ else
 	set tileCount to windowCount
 end if
 
--- Fixed grid layouts based on window count
-if tileCount is 1 then
-	set cols to 1
-	set rows to 1
-else if tileCount is 2 then
-	set cols to 2
-	set rows to 1
-else if tileCount is 3 then
-	set cols to 3
-	set rows to 1
-else if tileCount is 4 then
-	set cols to 2
-	set rows to 2
-else
-	-- 5 or 6 windows: 3x2 grid
-	set cols to 3
-	set rows to 2
-end if
-
-set tileWidth to usableWidth div cols
-
 -- Ghostty snaps window height to character cell boundaries, so an even
 -- split causes both rows to round up and overlap. Use a 35:34 row ratio
 -- for 2-row grids to account for this.
-if rows is 2 then
-	set topHeight to (usableHeight * 35 div 69)
-	set bottomHeight to usableHeight - topHeight
+set topHeight to (usableHeight * 35 div 69)
+set bottomHeight to usableHeight - topHeight
+
+-- Build per-window size/position lists for flexible layouts.
+set tileSizes to {}
+set tilePositions to {}
+
+if tileCount is 1 then
+	set end of tileSizes to {usableWidth, usableHeight}
+	set end of tilePositions to {startX, startY}
+
+else if tileCount is 2 then
+	set halfW to usableWidth div 2
+	set end of tileSizes to {halfW, usableHeight}
+	set end of tilePositions to {startX, startY}
+	set end of tileSizes to {halfW, usableHeight}
+	set end of tilePositions to {startX + halfW, startY}
+
+else if tileCount is 3 then
+	-- 1 large left + 2 stacked right
+	set halfW to usableWidth div 2
+	set end of tileSizes to {halfW, usableHeight}
+	set end of tilePositions to {startX, startY}
+	set end of tileSizes to {halfW, topHeight}
+	set end of tilePositions to {startX + halfW, startY}
+	set end of tileSizes to {halfW, bottomHeight}
+	set end of tilePositions to {startX + halfW, startY + topHeight}
+
+else if tileCount is 4 then
+	-- 2x2 grid
+	set halfW to usableWidth div 2
+	set end of tileSizes to {halfW, topHeight}
+	set end of tilePositions to {startX, startY}
+	set end of tileSizes to {halfW, topHeight}
+	set end of tilePositions to {startX + halfW, startY}
+	set end of tileSizes to {halfW, bottomHeight}
+	set end of tilePositions to {startX, startY + topHeight}
+	set end of tileSizes to {halfW, bottomHeight}
+	set end of tilePositions to {startX + halfW, startY + topHeight}
+
+else if tileCount is 5 then
+	-- 2 on top + 3 on bottom
+	set halfW to usableWidth div 2
+	set thirdW to usableWidth div 3
+	set end of tileSizes to {halfW, topHeight}
+	set end of tilePositions to {startX, startY}
+	set end of tileSizes to {halfW, topHeight}
+	set end of tilePositions to {startX + halfW, startY}
+	set end of tileSizes to {thirdW, bottomHeight}
+	set end of tilePositions to {startX, startY + topHeight}
+	set end of tileSizes to {thirdW, bottomHeight}
+	set end of tilePositions to {startX + thirdW, startY + topHeight}
+	set end of tileSizes to {thirdW, bottomHeight}
+	set end of tilePositions to {startX + thirdW * 2, startY + topHeight}
+
 else
-	set topHeight to usableHeight
-	set bottomHeight to 0
+	-- 6 windows: 3x2 grid
+	set thirdW to usableWidth div 3
+	set end of tileSizes to {thirdW, topHeight}
+	set end of tilePositions to {startX, startY}
+	set end of tileSizes to {thirdW, topHeight}
+	set end of tilePositions to {startX + thirdW, startY}
+	set end of tileSizes to {thirdW, topHeight}
+	set end of tilePositions to {startX + thirdW * 2, startY}
+	set end of tileSizes to {thirdW, bottomHeight}
+	set end of tilePositions to {startX, startY + topHeight}
+	set end of tileSizes to {thirdW, bottomHeight}
+	set end of tilePositions to {startX + thirdW, startY + topHeight}
+	set end of tileSizes to {thirdW, bottomHeight}
+	set end of tilePositions to {startX + thirdW * 2, startY + topHeight}
 end if
 
 -- Tile in two passes: resize all first, then position all.
@@ -129,31 +172,35 @@ tell application "System Events"
 		-- Pass 1: resize all target windows
 		repeat with idx from 1 to tileCount
 			set winIdx to item idx of targetIndices
-			set currentRow to (idx - 1) div cols
-			if currentRow is 0 then
-				set tileHeight to topHeight
-			else
-				set tileHeight to bottomHeight
-			end if
-			set size of window winIdx to {tileWidth, tileHeight}
+			set {w, h} to item idx of tileSizes
+			set size of window winIdx to {w, h}
 		end repeat
 		-- Pass 2: position all target windows
 		repeat with idx from 1 to tileCount
 			set winIdx to item idx of targetIndices
-			set currentRow to (idx - 1) div cols
-			set currentCol to (idx - 1) mod cols
-			if currentRow is 0 then
-				set yPos to startY
-			else
-				set yPos to startY + topHeight
-			end if
-			set position of window winIdx to {startX + (currentCol * tileWidth), yPos}
+			set {xPos, yPos} to item idx of tilePositions
+			set position of window winIdx to {xPos, yPos}
 		end repeat
 	end tell
 end tell
 
-if windowCount > 6 then
-	return "Tiled 6 of " & windowCount & " windows (" & cols & "x" & rows & " grid)"
+-- Layout description for status message
+if tileCount is 1 then
+	set layoutDesc to "fullscreen"
+else if tileCount is 2 then
+	set layoutDesc to "2 columns"
+else if tileCount is 3 then
+	set layoutDesc to "1+2 split"
+else if tileCount is 4 then
+	set layoutDesc to "2x2 grid"
+else if tileCount is 5 then
+	set layoutDesc to "2+3 split"
 else
-	return "Tiled " & tileCount & " windows (" & cols & "x" & rows & " grid)"
+	set layoutDesc to "3x2 grid"
+end if
+
+if windowCount > 6 then
+	return "Tiled 6 of " & windowCount & " windows (" & layoutDesc & ")"
+else
+	return "Tiled " & tileCount & " windows (" & layoutDesc & ")"
 end if
