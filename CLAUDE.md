@@ -60,13 +60,6 @@ Or for AppleScript:
 osascript <script-name>.applescript
 ```
 
-## Scripts
-
-- **open-xrdm-ghostty-session.applescript** - Opens a multi-tab Ghostty session for xrdm development (lazygit, code, k9s, Claude Code tabs) with git worktree support. Accepts a branch name argument and optionally a Claude Code prompt.
-- **open-appn-ghostty-session.applescript** - Opens a multi-tab Ghostty session for appn development (lazygit, code, Claude Code tabs) with git worktree support. Accepts a branch name argument and optionally a Claude Code prompt.
-- **open-raycast-scripts-ghostty-session.applescript** - Opens a multi-tab Ghostty session for this raycast_scripts repo (lazygit, code, Claude Code tabs).
-- **tile-ghostty-windows.applescript** - Tiles up to 6 Ghostty windows into a grid on the screen under the mouse cursor. Uses NSScreen/AppKit for multi-monitor support.
-
 ## AppleScript Gotchas
 
 ### NSScreen Coordinate Conversion
