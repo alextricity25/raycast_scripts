@@ -2,7 +2,7 @@
 
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title Open table-talk Ghostty Session
+# @raycast.title Open suppervisor Ghostty Session
 # @raycast.mode compact
 
 # Optional parameters:
@@ -13,7 +13,7 @@
 # @raycast.authorURL https://raycast.com/alex_cantu
 
 on run argv
-    set projectDir to "~/Development/table-talk"
+    set projectDir to "~/Development/suppervisor"
 
     -- Dismiss Raycast first
     tell application "System Events"
@@ -32,7 +32,7 @@ on run argv
             keystroke "n" using command down
             delay 1.5
 
-            -- Change to the table-talk project
+            -- Change to the suppervisor project
             keystroke "cd " & projectDir
             delay 0.2
 
@@ -59,7 +59,7 @@ on run argv
             delay 0.5
 
             -- Type the title for lazygit tab
-            keystroke "table-talk - lazygit"
+            keystroke "suppervisor - lazygit"
             delay 0.2
 
             -- Press Enter to confirm
@@ -70,7 +70,7 @@ on run argv
             keystroke "t" using command down
             delay 1.5
 
-            -- cd to the table-talk project
+            -- cd to the suppervisor project
             keystroke "cd " & projectDir
             delay 0.2
 
@@ -91,7 +91,7 @@ on run argv
             delay 0.5
 
             -- Type the title for code tab
-            keystroke "table-talk - code"
+            keystroke "suppervisor - code"
             delay 0.2
 
             -- Press Enter to confirm
@@ -103,7 +103,7 @@ on run argv
             keystroke "t" using command down
             delay 1.5
 
-            -- cd to the table-talk project
+            -- cd to the suppervisor project
             keystroke "cd " & projectDir
             delay 0.2
 
@@ -132,7 +132,7 @@ on run argv
             delay 0.5
 
             -- Type the title for claude tab
-            keystroke "table-talk - claude"
+            keystroke "suppervisor - claude"
             delay 0.2
 
             -- Press Enter to confirm
