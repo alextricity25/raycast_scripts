@@ -31,7 +31,7 @@ on run argv
     -- Look up the Linear issue and generate a terse tab label
     if issueID is not "" then
         try
-            set shortDescription to do shell script "echo 'Extract the Linear issue ID from this branch name: " & branchName & ". Look up the issue and generate a terse 3-4 word tab label describing the task. Output ONLY the label, nothing else.' | claude -p --allowedTools 'mcp__linear-server__get_issue'"
+            set shortDescription to do shell script "echo 'Extract the Linear issue ID from this branch name: " & branchName & ". Look up the issue and generate a terse 3-4 word tab label describing the task. Output ONLY the label, nothing else.' | claude -p --allowedTools 'mcp__claude_ai_Linear__get_issue'"
         on error
             set shortDescription to ""
         end try
@@ -225,7 +225,7 @@ on run argv
 
             -- Run claude code, with optional handoff prompt
             if claudePrompt is not "" then
-                keystroke "claude --allowedTools \"Edit,Write,mcp__linear-server__*,mcp__claude_ai_Slack__*\" \"" & claudePrompt & "\""
+                keystroke "claude --allowedTools \"Edit,Write,mcp__claude_ai_Linear,mcp__claude_ai_Slack\" \"" & claudePrompt & "\""
             else
                 keystroke "claude"
             end if
