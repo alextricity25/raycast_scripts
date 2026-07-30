@@ -28,6 +28,38 @@ on run argv
         set issueID to ""
     end if
 
+    -- If a Ghostty window for this ticket is already open, focus it and stop.
+    -- Tab titles are prefixed with the issue ID (falling back to the branch
+    -- name), so match window names against that key.
+    set searchKey to issueID
+    if searchKey is "" then set searchKey to branchName
+
+    if application "Ghostty" is running then
+        set existingWindow to missing value
+        tell application "System Events"
+            tell process "Ghostty"
+                repeat with w in windows
+                    try
+                        if (name of w) contains searchKey then
+                            set existingWindow to w
+                            exit repeat
+                        end if
+                    end try
+                end repeat
+            end tell
+        end tell
+
+        if existingWindow is not missing value then
+            tell application "System Events"
+                key code 53 -- Escape key to dismiss Raycast
+                delay 0.3
+                perform action "AXRaise" of existingWindow
+            end tell
+            tell application "Ghostty" to activate
+            return "Focused existing window: " & searchKey
+        end if
+    end if
+
     -- Look up the Linear issue and generate a terse tab label
     if issueID is not "" then
         try
@@ -39,9 +71,14 @@ on run argv
         set shortDescription to ""
     end if
 
-    -- Build the tab label prefix (e.g. "Fix Auth Flow")
+    -- Build the tab label prefix (e.g. "PLA-1234 Fix Auth Flow"). The issue ID
+    -- must be part of the label so the existing-window check above can find it.
     if shortDescription is not "" then
-        set tabLabel to shortDescription
+        if issueID is not "" then
+            set tabLabel to issueID & " " & shortDescription
+        else
+            set tabLabel to shortDescription
+        end if
     else
         set tabLabel to branchName
     end if
